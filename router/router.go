@@ -1,6 +1,7 @@
 package router
 
 import (
+	"P1/utility"
 	"P1/utility/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -8,8 +9,9 @@ import (
 var Router *gin.Engine
 
 func SetRouter() {
+	Router.Use(middleware.UnRSA)         //rsa decrypt
 	Router.Use(middleware.Authorization) //token verify
-
+	Router.POST("/api/user/auth", utility.GetTokenHandler)
 }
 
 /*
