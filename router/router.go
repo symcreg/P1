@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var Router *gin.Engine
+var Router *gin.Engine = gin.Default()
 
 func SetRouter() {
 	//Router.Use(middleware.UnRSA)                           //rsa decrypt

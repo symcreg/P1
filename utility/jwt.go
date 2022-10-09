@@ -10,7 +10,7 @@ import (
 )
 
 type Jwt struct {
-	Uid                int
+	Id                 int
 	User               string //用户名称
 	jwt.StandardClaims        //jwt标准claims
 }
@@ -41,7 +41,7 @@ func GetTokenHandler(c *gin.Context) {
 	var user config.User
 	var claim Jwt
 	c.ShouldBindJSON(&user)
-	claim.Uid = user.Uid
+	claim.Id = user.Id
 	claim.User = user.Username
 	token, err := GenToken(claim)
 	if err != nil {

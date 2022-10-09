@@ -9,13 +9,14 @@ import (
 
 func RegisterHandler(c *gin.Context) {
 	var user config.User
-	c.ShouldBindJSON(&user)                         //密码应为rsa公钥加密后的密文
+	c.ShouldBindJSON(&user)                         //密码应为前端rsa公钥加密后的密文
 	user.Password, _ = utility.UnRSA(user.Password) //使用私钥解密
 	db, err := gorm.Open("sqlite3", "P1.db")
 	if err != nil {
 		panic(err)
 	}
 	defer db.Close()
+	//密码应为6到16位，用户名应为4到16位
 	if len(user.Password) < 6 || len(user.Password) > 16 || len(user.Username) < 4 || len(user.Username) > 16 {
 		c.JSON(403, gin.H{
 			"code": 403,
@@ -24,17 +25,16 @@ func RegisterHandler(c *gin.Context) {
 	} else {
 		user.Password, _ = utility.PasswordHash(user.Password) //hash password
 		db.Create(&user)
-
 	}
 }
 func LoginHandler(c *gin.Context) {
-	Uid, _ := c.Get("Uid")
+	Id, _ := c.Get("Id")
 	User, _ := c.Get("User")
-	if Uid != "" {
+	if Id != "" {
 		c.JSON(200, gin.H{
 			"code":     200,
 			"msg":      "ReLogin",
-			"uid":      Uid,
+			"uid":      Id,
 			"username": User,
 		})
 		return
@@ -46,7 +46,7 @@ func LoginHandler(c *gin.Context) {
 	defer db.Close()
 	var user config.User
 	var userFromDB config.User
-	c.ShouldBindJSON(&user)                         //密码应为rsa公钥加密后的密文
+	c.ShouldBindJSON(&user)                         //密码应为前端rsa公钥加密后的密文
 	user.Password, _ = utility.UnRSA(user.Password) //使用私钥解密
 	if err != nil {
 		panic(err)
@@ -62,7 +62,7 @@ func LoginHandler(c *gin.Context) {
 			c.JSON(200, gin.H{
 				"code":     200,
 				"msg":      "login success",
-				"uid":      userFromDB.Uid,
+				"uid":      userFromDB.Id,
 				"username": userFromDB.Username,
 			}) //登录成功，前端应请求token
 		} else {

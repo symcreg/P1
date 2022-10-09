@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
-	db.InitDB()
-	router.SetRouter()
+	db.InitDB()                //初始化数据库
+	router.SetRouter()         //设置路由
+	router.Router.Run(":8080") //启动监听
 }

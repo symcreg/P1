@@ -3,6 +3,7 @@ package db
 import (
 	"P1/config"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 func InitDB() {

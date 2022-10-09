@@ -24,7 +24,7 @@ func Authorization(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	c.Set("Uid", claim.Uid)
+	c.Set("Id", claim.Id)
 	c.Set("User", claim.User)
 	c.Next()
 }
