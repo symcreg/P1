@@ -1,6 +1,7 @@
 package utility
 
 import (
+	"crypto"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
@@ -9,7 +10,7 @@ import (
 
 var PrivateKey, err = rsa.GenerateKey(rand.Reader, 2048) //私钥，用此私钥解密
 var PublicKey = PrivateKey.PublicKey                     //公钥，发送给前端以加密
-func rsaHandler(c gin.Context) {
+func RSAHandler(c *gin.Context) {
 	if err != nil {
 		panic("generate rsaKey error")
 		return
@@ -32,4 +33,12 @@ func enRSA(data string, PublicKey rsa.PublicKey) (string, error) { //根据公�
 		return "", err
 	}
 	return string(EncryptedData), nil
+}
+func UnRSA(EncryptedData string) (string, error) { //根据私钥解密
+	DecryptedData, err := PrivateKey.Decrypt(nil, []byte(EncryptedData), &rsa.OAEPOptions{Hash: crypto.SHA256})
+	if err != nil {
+		panic("decrypt data error")
+		return "", err
+	}
+	return string(DecryptedData), nil
 }
